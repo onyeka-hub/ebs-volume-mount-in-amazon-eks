@@ -11,6 +11,7 @@ Troubleshooting issues with my ebs volume mount in amazon eks https://aws.amazon
 4. To use the driver, you must add it as an Amazon EKS add-on or as a self-managed add-on.
 
 5. To add it as an Amazon EKS add-on, you must have:
+
     a. a cluster 
     b. an existing AWS Identity and Access Management (IAM) OpenID Connect (OIDC) provider for your cluster.
 
