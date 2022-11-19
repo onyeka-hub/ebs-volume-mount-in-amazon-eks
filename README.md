@@ -13,7 +13,7 @@ Troubleshooting issues with my ebs volume mount in amazon eks https://aws.amazon
 5. To add it as an Amazon EKS add-on, you must have:
 
     a. a cluster 
-    
+
     b. an existing AWS Identity and Access Management (IAM) OpenID Connect (OIDC) provider for your cluster.
 
 6. To determine whether you already have one or to create one. Your cluster has an OpenID  Connect (OIDC) issuer URL associated with it. To use AWS IAM roles for service accounts, an IAM OIDC provider must exist for your cluster.
@@ -55,7 +55,7 @@ Prerequisites
 
     2. An existing AWS Identity and Access Management (IAM) OpenID Connect (OIDC) provider for your cluster. To determine whether you already have one, or to create one, see Creating an IAM OIDC provider for your cluster https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html.
 
-#### Create an IAM role and attach the required AWS managed policy to it. You can use eksctl, the AWS Management Console, or the AWS CLI.
+### Create an IAM role and attach the required AWS managed policy to it. You can use eksctl, the AWS Management Console, or the AWS CLI.
 
  #### Using AWS Management Console
 
@@ -87,7 +87,7 @@ To create your Amazon EBS CSI plugin IAM role with the AWS Management Console
 
 6. On the **Name, review, and create page**, do the following:
 
-    a. For **Role name**, enter a unique name for your role, such as **AmazonEKS_EBS_CSI_DriverRole**.
+    a. For **Role name**, enter a unique name for your role, such as `AmazonEKS_EBS_CSI_DriverRole`.
 
     b. Under **Add tags (Optional)**, add metadata to the role by attaching tags as key–value pairs. For more information about using tags in IAM, see Tagging IAM Entities in the IAM User Guide.
 
