@@ -2,7 +2,7 @@
 Troubleshooting issues with my ebs volume mount in amazon eks https://aws.amazon.com/premiunsupport/knowledge-center/eks-troubleshoot-ebs-volume-mounts/
 
 ## Step 1
-1. Verify that you have the required AWS Identity and Access Management (IAM) permission for your "ebs-csi-controller-sa" service account IAM role.
+1. Verify that you have the required AWS Identity and Access Management (IAM) permission for your "ebs-csi-controller-sa" service account IAM role. In otherwords check whether you have an IAM role for ebs-csi-controller service-account.
 
 2. The ebs-csi-controller has a service account and the service account should have the required IAM roles attached to it.
 
@@ -19,7 +19,7 @@ Troubleshooting issues with my ebs volume mount in amazon eks https://aws.amazon
 6. To determine whether you already have one or to create one. Your cluster has an OpenID  Connect (OIDC) issuer URL associated with it. To use AWS IAM roles for service accounts, an IAM OIDC provider must exist for your cluster.
 
 ## Step 2
-To create an IAM OIDC identity provider for your cluster with the AWS Management Console
+To check for an IAM OIDC identity provider for your cluster with the AWS Management Console
 
 1. Open the Amazon EKS console at https://console.aws.amazon.com/eks/home#/clusters.
 
@@ -40,14 +40,15 @@ To create an IAM OIDC identity provider for your cluster with the AWS Management
 9. For **Audience**, enter 'sts.amazonaws.com' and choose **Add provider**.
 
 Copy the Cluster's OIDC provider ID
+
 ## Step 3
-### Creating the Amazon EBS CSI driver IAM role for service accounts.
+### Creating the IAM role for Amazon ebs-csi-driver service-accounts.
 
 The Amazon EBS CSI plugin requires IAM permissions to make calls to AWS APIs on your behalf. For more information, see Set up driver permission on GitHub https://github.com/kubernetes-sigs/aws-ebs-csi-driver/tree/master/docs#set-up-driver-permission.
 
 When the plugin is deployed, it creates and is configured to use a service account that's named ebs-csi-controller-sa. The service account is bound to a Kubernetes clusterrole that's assigned the required Kubernetes permissions.
 
-**Note**: No matter if you configure the Amazon EBS CSI plugin to use IAM roles for service accounts, the pods have access to the permissions that are assigned to the IAM role. This is the case except when you block access to IMDS. For more information, see Security best practices for Amazon EKS https://docs.aws.amazon.com/eks/latest/userguide/security-best-practices.html.
+**Note**: No matter if you configure the Amazon ebs-csi plugin to use IAM roles for service accounts, the pods have access to the permissions that are assigned to the IAM role. This is the case except when you block access to IMDS. For more information, see Security best practices for Amazon EKS https://docs.aws.amazon.com/eks/latest/userguide/security-best-practices.html.
 
 Prerequisites
 
@@ -93,7 +94,7 @@ To create your Amazon EBS CSI plugin IAM role with the AWS Management Console
 
     c. Choose **Create role**.
 
-7. After the role is created, choose the role in the console to open it for editing.
+7. After the role is created, choose the AmazonEKS_EBS_CSI_DriverRole role you created in the console and open it for editing.
 
 8. Choose the **Trust relationships** tab, and then choose **Edit trust policy**.
 
@@ -103,7 +104,7 @@ To create your Amazon EBS CSI plugin IAM role with the AWS Management Console
     "oidc.eks.region-code.amazonaws.com/id/EXAMPLED539D4633E53DE1B71EXAMPLE:aud": "sts.amazonaws.com"
     ```
 
-    Add a comma to the end of the previous line, and then add the following line after the previous line. Replace **region-code** with the AWS Region that your cluster is in. Replace **EXAMPLED539D4633E53DE1B71EXAMPLE** with your cluster's OIDC provider ID.
+    Add a comma to the end of the line, and then add the below line after it. Replace **region-code** with the AWS Region that your cluster is in. Replace **EXAMPLED539D4633E53DE1B71EXAMPLE** with your cluster's OIDC provider ID.
 
     ```
     "oidc.eks.region-code.amazonaws.com/id/EXAMPLED539D4633E53DE1B71EXAMPLE:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
@@ -180,6 +181,7 @@ kubectl annotate serviceaccount ebs-csi-controller-sa -n kube-system eks.amazona
 ```
 
 ## Step 4
+
 ### Adding the Amazon EBS CSI add-on
 **Important**: Before adding the Amazon EBS CSI add-on, confirm that you don't self-manage any settings that Amazon EKS will start managing. To determine which settings Amazon EKS manages, see Amazon EKS add-on configuration.
 
@@ -201,15 +203,15 @@ To add the Amazon EBS CSI add-on using the AWS Management Console
 
 a. Select **Amazon EBS CSI Driver** for **Name**.
 
-b. Select the **Version** you'd like to use.
+b. Select the **Version** you'd like to use or go with the default.
 
 c. For **Service account role**, select the name of an IAM role that you attached the IAM policy to.
 
 d. If you select **Override existing configuration for this add-on on the cluster**., one or more of the settings for the existing add-on can be overwritten with the Amazon EKS add-on settings. If you don't enable this option and there's a conflict with your existing settings, the operation fails. You can use the resulting error message to troubleshoot the conflict. Before selecting this option, make sure that the Amazon EKS add-on doesn't manage settings that you need to self-manage. For more information about managing Amazon EKS add-ons, see Amazon EKS add-on configuration.
 
-e. Choose **Add**.
+e. Choose **Add or create**
 
-#### Updating the Amazon EBS CSI driver as an Amazon EKS add-on
+### Updating the Amazon EBS CSI driver as an Amazon EKS add-on
 Amazon EKS doesn't automatically update Amazon EBS CSI for your cluster when new versions are released or after you update your cluster to a new Kubernetes minor version. To update Amazon EBS CSI on an existing cluster, you must initiate the update and then Amazon EKS updates the add-on for you.
 
 **Important**: Update your cluster and nodes to a new Kubernetes minor version before you update Amazon EBS CSI to the same minor version.
@@ -237,7 +239,7 @@ To update the Amazon EBS CSI add-on using the AWS Management Console
 
     d. Select Update.
 
-#### Removing the Amazon EBS CSI add-on
+### Removing the Amazon EBS CSI add-on
 You have two options for removing an Amazon EKS add-on.
 
 - **Preserve add-on software on your cluster** – This option removes Amazon EKS management of any settings. It also removes the ability for Amazon EKS to notify you of updates and automatically update the Amazon EKS add-on after you initiate an update. However, it preserves the add-on software on your cluster. This option makes the add-on a self-managed add-on, rather than an Amazon EKS add-on. With this option, there's no downtime for the add-on. The commands in this procedure use this option.
